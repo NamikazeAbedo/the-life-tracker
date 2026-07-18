@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Life Tracker</title>
+    <link rel="stylesheet" href="stayling.css">
+</head>
+<body>
+
+    <nav>
+        <div class="logo">
+            <p>The Life Tracker</p>
+        </div>
+    </nav>
+
+    <main class="thestuff">
+
+        <!-- Weight Section -->
+        <div class="card">
+
+            <div class="top-row">
+                <img src="icons/weight.png" alt="Weight">
+
+                    <input type="radio" name="weight-unit" id="kg"> kg
+                    <input type="radio" name="weight-unit" id="lbs"> lbs
+            </div>
+
+            <input
+                type="number"
+                id="weightInput"    
+                placeholder="Enter your weight"
+            >
+
+        </div>
+
+        <!-- Height Section -->
+        <div class="card">
+
+            <div class="top-row">
+                <img src="icons/height.png" alt="Height">
+                    <input type="radio" name="height-unit" id="cm"> cm
+                    <input type="radio" name="height-unit" id="inch"> in
+            </div>
+
+            <input
+                type="number"
+                id="heightInput"
+                placeholder="Enter your height"
+            >
+
+        </div>
+
+        <!-- Button -->
+        <button id="btn">
+            Calculate
+        </button>
+            <div  class="card">
+                <div class="top-row">
+                    <div class="output">
+
+                    </div>
+                </div>
+            </div>
+    </main>
+     <script src="script.js"></script>
+</body>
+</html>

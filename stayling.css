@@ -1,0 +1,122 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    min-height:100vh;
+    font-family:Arial, Helvetica, sans-serif;
+    background:linear-gradient(
+        135deg,
+        #233641,
+        #18709f,
+        #233641
+    );
+}
+
+nav{
+    background:#18709f;
+    padding:20px;
+}
+
+.logo{
+    color:white;
+    font-size:2rem;
+    font-weight:bold;
+    text-align:center;
+}
+
+.thestuff{
+    max-width:600px;
+    margin:50px auto;
+    padding:30px;
+
+    background:rgba(255,255,255,0.12);
+    backdrop-filter:blur(10px);
+
+    border:1px solid rgba(255,255,255,0.2);
+    border-radius:20px;
+
+    display:flex;
+    flex-direction:column;
+    gap:30px;
+}
+
+.card{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:15px;
+}
+
+.top-row{
+    display:flex;
+    align-items:center;
+    gap:20px;
+    color:white;
+}
+
+.top-row img{
+    width:50px;
+    filter:brightness(0) invert(1);
+}
+
+/* label{
+    display:flex;
+    align-items:center;
+    gap:5px;
+} */
+
+input[type="number"]{
+    width:100%;
+    max-width:300px;
+
+    padding:12px 20px;
+
+    border:none;
+    border-radius:50px;
+
+    background:rgba(255,255,255,0.2);
+    color:white;
+
+    outline:none;
+}
+
+input[type="number"]::placeholder{
+    color:rgba(255,255,255,0.7);
+}
+
+button{
+    width:200px;
+    margin:auto;
+
+    padding:12px;
+
+    border:none;
+    border-radius:50px;
+
+    background:#18709f;
+    color:white;
+
+    font-size:1rem;
+    font-weight:bold;
+
+    cursor:pointer;
+    transition:0.3s;
+}
+
+button:hover{
+    transform:translateY(-3px);
+    background:#2196d3;
+}
+
+button::after{
+
+    transform:translateY(-6px);
+    background:#88482d;
+}
+.output{
+    color: whitesmoke;
+
+}
