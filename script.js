@@ -1,87 +1,154 @@
-// const { createElement } = require("react");
+        const weightInput = document.getElementById("weightInput");
+        const heightInput = document.getElementById("heightInput");
 
-const weightInput = document.getElementById("weightInput");
-const heightInput = document.getElementById("heightInput");
+        const kg = document.getElementById("kg");
+        const lbs = document.getElementById("lbs");
+        const cm = document.getElementById("cm");
+        const inch = document.getElementById("inch");
+        const btn = document.getElementById("btn");
 
-const kg = document.getElementById("kg");
-const lbs = document.getElementById("lbs");
+        const bmiPointer = document.getElementById("bmiPointer");
+        const bmiOutput = document.getElementById("bmiOutput");
+        const bmiCategory = document.getElementById("bmiCategory");
 
-const cm = document.getElementById("cm");
-const inch = document.getElementById("inch");
+        const yourNeedOfWater = document.getElementById("YNOW_OUTPUT");
+        const protin_OUTPUT = document.getElementById("protin_OUTPUT");
+        const carb_OUTPUT = document.getElementById("carb_OUTPUT");
+        const fat_OUTPUT = document.getElementById("fat_OUTPUT");
 
-const btn = document.getElementById("btn");
+        // Radio button synchronization
+        cm.addEventListener("change", () => { kg.checked = true; });
+        inch.addEventListener("change", () => { lbs.checked = true; });
+        kg.addEventListener("change", () => { cm.checked = true; });
+        lbs.addEventListener("change", () => { inch.checked = true; });
 
+        // ✅ Fixed gauge — maps BMI categories to correct pointer angles
+        function updateGauge(bmi) {
+            let degrees;
+            let category;
 
-const bmiInput = document.getElementById('bmiInput');
-const bmiValueText = document.getElementById('bmiValue');
-const bmiPointer = document.getElementById('bmiPointer');
+            if (bmi < 16) {
+                degrees = -90;                          // severely underweight → far left
+                category = "Severely Underweight";
+            } else if (bmi < 18.5) {
+                degrees = -60;                          // underweight → left
+                category = "Underweight";
+            } else if (bmi < 25) {
+                degrees = -15 + ((bmi - 18.5) / 6.5) * 30;  // normal → center (smooth)
+                category = "Normal Weight ✅";
+            } else if (bmi < 30) {
+                degrees = 30 + ((bmi - 25) / 5) * 30;        // overweight → right (smooth)
+                category = "Overweight ⚠️";
+            } else if (bmi < 35) {
+                degrees = 65;                           // obese → far right
+                category = "Obese ";
+            } else {
+                degrees = 90;                           // severely obese → max right
+                category = "Severely Obese ❌";
+            }
 
-const minBMI = 15;
-const maxBMI = 35;
-const minDegrees = -90;
-const maxDegrees = 90;
+            bmiPointer.style.transform = `translateX(-50%) rotate(${degrees}deg)`;
+            bmiCategory.textContent = category;
+        }
 
-cm.addEventListener("change", () => {
-    kg.checked = true;
-});
+        btn.addEventListener("click", () => {
+            const weight = Number(weightInput.value);
+            const heightInputValue = Number(heightInput.value);
 
-inch.addEventListener("change", () => {
-    lbs.checked = true;
-});
+            if (weight <= 0 || heightInputValue <= 0) {
+                bmiOutput.textContent = "Please enter valid values.";
+                return;
+            }
 
-kg.addEventListener("change", () => {
-    cm.checked = true;
-});
+            let bmi;
+            let height;
+            let yrNeedOFwhater;
 
-lbs.addEventListener("change", () => {
-    inch.checked = true;
-});
+            let yrNeedOFsuger;
 
-btn.addEventListener("click", () => {
+            let yrNeedOFProteinMin;
+            let yrNeedOFfatMin;
+            let yrNeedOFcarbMin;
 
-    const weight = Number(weightInput.value);
-const heightCm = Number(heightInput.value);
-const height = heightCm / 100;
+            let yrNeedOFfatMaxfromcarb;
+            let yrNeedOFfatMinfromcarb;
 
- const currentBMI = parseFloat(bmiInput.value);
-    bmiValueText.textContent = currentBMI;
+            let yrNeedOFProteinMax;
+            let yrNeedOFfatMax;
+            let yrNeedOFcarbMax;
 
-    console.log("Weight:", weight);
-console.log("Height:", height);
-console.log("KG checked:", kg.checked);
-    if (weight <= 0 || height <= 0) {
-        document.querySelector(".output").textContent = 
-            "Please enter valid values.";
-        return;
-    }
+            if (kg.checked && cm.checked) {
 
-    let bmi;
+                // bmi
+                height = heightInputValue / 100;
+                bmi = weight / (height * height);
+                       //    whater
+                yrNeedOFwhater = weight / 30 ;
+                    //  Protein
+                    //     For general :
+                    //     For muscle building or if very active:
+                       yrNeedOFProteinMax = weight * 1.4;//(minimum)
+                      yrNeedOFProteinMin = weight * 2.0;//(maximum)
 
-    if (kg.checked) {
-        bmi = weight / (height * height);
-    } else {
-        bmi = (weight * 703) / (height * height);
-    }
+                    // fat
+                    //    based on what u eat from carb
+                      yrNeedOFfatMaxfromcarb = (weight * 30 * 0.20) / 9;//(minimum)
+                      yrNeedOFfatMinfromcarb =  (weight * 30 * 0.35) / 9;;//(maximum)
 
+                   // carb
+                       
+                    yrNeedOFcarbMin = ((weight * 30) - 1000) / 4;          // min carbs (grams)
+                    yrNeedOFcarbMax = ((weight * 30) - 250) / 4; 
+                    // max carbs in your naming (but note: this is actually fewer carbs)
 
+                   // suger
 
-    document.querySelector(".output").textContent =
-        `BMI: ${bmi.toFixed(2)}`;
-        
-    const percentage = (currentBMI - minBMI) / (maxBMI - minBMI);
-    const targetDegrees = minDegrees + (percentage * (maxDegrees - minDegrees));
+            } else if (lbs.checked && inch.checked) {
+                height = heightInputValue;
+                                // bmi
+                bmi = (weight * 703) / (height * height);
 
-    /* FIX 2: The main problem was here - we need to properly set the transform
-       with translateX first, then rotate, and ensure we're not overriding
-       the transform-origin that's set in CSS */
-    bmiPointer.style.transform = `translateX(-50%) rotate(${targetDegrees}deg)`;
+                       //    whater
+                yrNeedOFwhater = weight / 0.67 ;
 
-});
+                                    //  Protein
+                    //     For muscle building or if very active:
+                      yrNeedOFProtein = weight * 0.36;//(minimum)
+                      yrNeedOFProtein = weight *  1.0 ;//(maximum)
+            } else {
+                bmiOutput.textContent = "Please select matching units (kg/cm or lbs/in)";
+                return;
+            }
+            
+            let unitychanger;
 
+            if (kg.checked) unitychanger= `L/DAY`;
+            else unitychanger= `OZ/DAY`
+                    updateGauge(bmi);
+            bmiOutput.textContent = `BMI: ${bmi.toFixed(2)}`;
+    
+     
+            yourNeedOfWater.textContent = 
+                `the water you need: ${yrNeedOFwhater.toFixed(3) + unitychanger}`;
+            protin_OUTPUT.textContent = 
+               ` your needs of protin:\n
+                the minimum:${yrNeedOFProteinMin.toFixed(3)} G/DAY\n
+                the minimum:${yrNeedOFProteinMax.toFixed(3)} G/DAY.`;
 
-console.log("JS loaded");
+            carb_OUTPUT.textContent = 
+               `your needs of carb:\n
+                the maximum:${yrNeedOFfatMin.toFixed(3)} G/DAY.\n
+                the minimum: ${yrNeedOFfatMax.toFixed(3)} G/DAY.`;
+                
+            fat_OUTPUT.textContent = 
+               `your needs of fat:\n
+               the minimum:${yrNeedOFcarbMin.toFixed(3)} G/DAY.\n
+               the maximum:${yrNeedOFcarbMax.toFixed(3)} G/DAY.\n
+               in ever carb you eat how mutch it gonna be fat:\n
+               the minimum:${yrNeedOFfatMaxfromcarb.toFixed(3)} G/DAY.\n
+               the maximum:${yrNeedOFfatMinfromcarb.toFixed(3)} G/DAY.`;
 
+        });
 
-
-bmiInput.addEventListener('input', updateGauge);
-updateGauge();
+        // initialize pointer at normal range
+        updateGauge(22);
