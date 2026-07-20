@@ -120,3 +120,35 @@ button::after{
     color: whitesmoke;
 
 }
+        .bmi-container { 
+            text-align: center; 
+            font-family: sans-serif; 
+            margin-top: 50px;
+        }
+
+        .gauge-wrapper {
+            position: relative;
+            width: 400px;
+            height: 200px;
+            margin: 0 auto 30px auto;
+        }
+
+        .bmi-rate-bg {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: contain;
+        }
+
+        #bmiPointer {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 100px;
+            height: auto;
+            transform-origin: bottom center;
+            transition: transform 0.3s ease-out;
+            z-index: 10;
+            /* FIX 1: We need to handle centering differently */
+            transform: translateX(-50%) rotate(0deg);
+        }

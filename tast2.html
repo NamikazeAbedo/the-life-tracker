@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Life Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: Arial, Helvetica, sans-serif;
+            background: linear-gradient(135deg, #233641, #18709f, #233641);
+        }
+
+        nav {
+            background: #18709f;
+            padding: 20px;
+        }
+
+        .logo {
+            color: white;
+            font-size: 2rem;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .thestuff {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .top-row {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            color: white;
+        }
+
+        .top-row img {
+            width: 50px;
+            filter: brightness(0) invert(1);
+        }
+
+        input[type="number"] {
+            width: 100%;
+            max-width: 300px;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            outline: none;
+        }
+
+        input[type="number"]::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        input[type="radio"] {
+            accent-color: #18709f;
+            cursor: pointer;
+        }
+
+        button {
+            width: 200px;
+            margin: auto;
+            padding: 12px;
+            border: none;
+            border-radius: 50px;
+            background: #18709f;
+            color: white;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            background: #2196d3;
+        }
+
+        .output {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .bmi-container {
+            text-align: center;
+            font-family: sans-serif;
+        }
+
+        .gauge-wrapper {
+            position: relative;
+            width: 400px;
+            height: 200px;
+            margin: 0 auto;
+        }
+
+        .bmi-rate-bg {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: contain;
+        }
+
+        #bmiPointer {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 100px;
+            height: auto;
+            transform-origin: bottom center;
+            transition: transform 0.5s ease-out;
+            z-index: 10;
+            transform: translateX(-50%) rotate(-90deg);
+        }
+
+        .card .bmi-container {
+            margin-top: 0;
+        }
+
+        .bmi-category {
+            color: white;
+            font-size: 1rem;
+            margin-top: 5px;
+            opacity: 0.85;
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">
+            <p>The Life Tracker</p>
+        </div>
+    </nav>
+
+    <main class="thestuff">
+
+        <!-- Weight Section -->
+        <div class="card">
+            <div class="top-row">
+                <img src="icons/weight.png" alt="Weight">
+                <input type="radio" name="weight-unit" id="kg" checked> kg
+                <input type="radio" name="weight-unit" id="lbs"> lbs
+            </div>
+            <input type="number" id="weightInput" placeholder="Enter your weight">
+        </div>
+
+        <!-- Height Section -->
+        <div class="card">
+            <div class="top-row">
+                <img src="icons/height.png" alt="Height">
+                <input type="radio" name="height-unit" id="cm" checked> cm
+                <input type="radio" name="height-unit" id="inch"> in
+            </div>
+            <input type="number" id="heightInput" placeholder="Enter your height">
+        </div>
+
+        <!-- Button -->
+        <button id="btn">Calculate</button>
+
+        <!-- BMI Gauge -->
+        <div class="card">
+            <div class="bmi-container">
+                <div class="gauge-wrapper">
+                    <img class="bmi-rate-bg" src="icons/the rate.png" alt="BMI rate">
+                    <img id="bmiPointer" src="icons/the body mass index.png" alt="BMI Pointer">
+                </div>
+            </div>
+            <div class="output" id="bmiOutput">BMI: --</div>
+            <div class="bmi-category" id="bmiCategory"></div>
+        </div>
+
+    </main>
+
+    <script>
+        const weightInput = document.getElementById("weightInput");
+        const heightInput = document.getElementById("heightInput");
+        const kg = document.getElementById("kg");
+        const lbs = document.getElementById("lbs");
+        const cm = document.getElementById("cm");
+        const inch = document.getElementById("inch");
+        const btn = document.getElementById("btn");
+        const bmiPointer = document.getElementById("bmiPointer");
+        const bmiOutput = document.getElementById("bmiOutput");
+        const bmiCategory = document.getElementById("bmiCategory");
+
+        // Radio button synchronization
+        cm.addEventListener("change", () => { kg.checked = true; });
+        inch.addEventListener("change", () => { lbs.checked = true; });
+        kg.addEventListener("change", () => { cm.checked = true; });
+        lbs.addEventListener("change", () => { inch.checked = true; });
+
+        // ✅ Fixed gauge — maps BMI categories to correct pointer angles
+        function updateGauge(bmi) {
+            let degrees;
+            let category;
+
+            if (bmi < 16) {
+                degrees = -90;                          // severely underweight → far left
+                category = "Severely Underweight";
+            } else if (bmi < 18.5) {
+                degrees = -60;                          // underweight → left
+                category = "Underweight";
+            } else if (bmi < 25) {
+                degrees = -15 + ((bmi - 18.5) / 6.5) * 30;  // normal → center (smooth)
+                category = "Normal Weight ✅";
+            } else if (bmi < 30) {
+                degrees = 30 + ((bmi - 25) / 5) * 30;        // overweight → right (smooth)
+                category = "Overweight ⚠️";
+            } else if (bmi < 35) {
+                degrees = 65;                           // obese → far right
+                category = "Obese ❌";
+            } else {
+                degrees = 90;                           // severely obese → max right
+                category = "Severely Obese ❌";
+            }
+
+            bmiPointer.style.transform = `translateX(-50%) rotate(${degrees}deg)`;
+            bmiCategory.textContent = category;
+        }
+
+        btn.addEventListener("click", () => {
+            const weight = Number(weightInput.value);
+            const heightInputValue = Number(heightInput.value);
+
+            if (weight <= 0 || heightInputValue <= 0) {
+                bmiOutput.textContent = "Please enter valid values.";
+                return;
+            }
+
+            let bmi;
+            let height;
+
+            if (kg.checked && cm.checked) {
+                height = heightInputValue / 100;
+                bmi = weight / (height * height);
+            } else if (lbs.checked && inch.checked) {
+                height = heightInputValue;
+                bmi = (weight * 703) / (height * height);
+            } else {
+                bmiOutput.textContent = "Please select matching units (kg/cm or lbs/in)";
+                return;
+            }
+
+            updateGauge(bmi);
+            bmiOutput.textContent = `BMI: ${bmi.toFixed(2)}`;
+        });
+
+        // initialize pointer at normal range
+        updateGauge(22);
+    </script>
+
+</body>
+</html>

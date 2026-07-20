@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Life Tracker</title>
-    <link rel="stylesheet" href="stayling.css">
+  
 </head>
 <body>
 
@@ -18,51 +18,41 @@
 
         <!-- Weight Section -->
         <div class="card">
-
             <div class="top-row">
                 <img src="icons/weight.png" alt="Weight">
-
-                    <input type="radio" name="weight-unit" id="kg"> kg
-                    <input type="radio" name="weight-unit" id="lbs"> lbs
+                <input type="radio" name="weight-unit" id="kg" checked> kg
+                <input type="radio" name="weight-unit" id="lbs"> lbs
             </div>
-
-            <input
-                type="number"
-                id="weightInput"    
-                placeholder="Enter your weight"
-            >
-
+            <input type="number" id="weightInput" placeholder="Enter your weight">
         </div>
 
         <!-- Height Section -->
         <div class="card">
-
             <div class="top-row">
                 <img src="icons/height.png" alt="Height">
-                    <input type="radio" name="height-unit" id="cm"> cm
-                    <input type="radio" name="height-unit" id="inch"> in
+                <input type="radio" name="height-unit" id="cm" checked> cm
+                <input type="radio" name="height-unit" id="inch"> in
             </div>
-
-            <input
-                type="number"
-                id="heightInput"
-                placeholder="Enter your height"
-            >
-
+            <input type="number" id="heightInput" placeholder="Enter your height">
         </div>
 
         <!-- Button -->
-        <button id="btn">
-            Calculate
-        </button>
-            <div  class="card">
-                <div class="top-row">
-                    <div class="output">
+        <button id="btn">Calculate</button>
 
-                    </div>
+        <!-- BMI Gauge -->
+        <div class="card">
+            <div class="bmi-container">
+                <div class="gauge-wrapper">
+                    <img class="bmi-rate-bg" src="icons/the rate.png" alt="BMI rate">
+                    <img id="bmiPointer" src="icons/the body mass index.png" alt="BMI Pointer">
                 </div>
             </div>
+            <div class="output" id="bmiOutput">BMI: --</div>
+            <div class="bmi-category" id="bmiCategory"></div>
+        </div>
+
     </main>
-     <script src="script.js"></script>
+
+
 </body>
 </html>
