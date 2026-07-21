@@ -16,6 +16,8 @@
         const carb_OUTPUT = document.getElementById("carb_OUTPUT");
         const fat_OUTPUT = document.getElementById("fat_OUTPUT");
 
+
+
         // Radio button synchronization
         cm.addEventListener("change", () => { kg.checked = true; });
         inch.addEventListener("change", () => { lbs.checked = true; });
@@ -76,49 +78,60 @@
             let yrNeedOFProteinMax;
             let yrNeedOFfatMax;
             let yrNeedOFcarbMax;
+if (kg.checked && cm.checked) {
 
-            if (kg.checked && cm.checked) {
+    // BMI
+    height = heightInputValue / 100;
+    bmi = weight / (height * height);
 
-                // bmi
-                height = heightInputValue / 100;
-                bmi = weight / (height * height);
-                       //    whater
-                yrNeedOFwhater = weight / 30 ;
-                    //  Protein
-                    //     For general :
-                    //     For muscle building or if very active:
-                       yrNeedOFProteinMax = weight * 1.4;//(minimum)
-                      yrNeedOFProteinMin = weight * 2.0;//(maximum)
+    // water (ml/day → convert to L)
+    yrNeedOFwhater = (weight * 30) / 1000;   // ✅ convert ml to L
 
-                    // fat
-                    //    based on what u eat from carb
-                      yrNeedOFfatMaxfromcarb = (weight * 30 * 0.20) / 9;//(minimum)
-                      yrNeedOFfatMinfromcarb =  (weight * 30 * 0.35) / 9;;//(maximum)
+    // protein (g/day)
+    yrNeedOFProteinMin = weight * 1.4;
+    yrNeedOFProteinMax = weight * 2.0;
 
-                   // carb
-                       
-                    yrNeedOFcarbMin = ((weight * 30) - 1000) / 4;          // min carbs (grams)
-                    yrNeedOFcarbMax = ((weight * 30) - 250) / 4; 
-                    // max carbs in your naming (but note: this is actually fewer carbs)
+    // fat per day (g/day)
+    yrNeedOFfatMin = weight * 0.7;
+    yrNeedOFfatMax = weight * 1.3;
 
-                   // suger
+    // fat from carb calories (g/day)
+    yrNeedOFfatMinfromcarb = (weight * 30 * 0.20) / 9;   // ✅ no duplicate
+    yrNeedOFfatMaxfromcarb = (weight * 30 * 0.35) / 9;
 
-            } else if (lbs.checked && inch.checked) {
-                height = heightInputValue;
-                                // bmi
-                bmi = (weight * 703) / (height * height);
+    // carbs (g/day) ✅ was missing
+    yrNeedOFcarbMin = ((weight * 30) - 1000) / 4;
+    yrNeedOFcarbMax = ((weight * 30) - 250)  / 4;
+}
+else if (lbs.checked && inch.checked) {
 
-                       //    whater
-                yrNeedOFwhater = weight / 0.67 ;
 
-                                    //  Protein
-                    //     For muscle building or if very active:
-                      yrNeedOFProtein = weight * 0.36;//(minimum)
-                      yrNeedOFProtein = weight *  1.0 ;//(maximum)
-            } else {
-                bmiOutput.textContent = "Please select matching units (kg/cm or lbs/in)";
-                return;
-            }
+            // BMI
+            height = heightInputValue;
+            bmi = (weight * 703) / (height * height);
+
+            // water (oz/day)
+            yrNeedOFwhater = weight / 0.67;
+
+            // protein (g/day)
+            yrNeedOFProteinMin = weight * 0.636;   // 1.4g per kg = 0.636g per lbs
+            yrNeedOFProteinMax = weight * 0.907;   // 2.0g per kg = 0.907g per lbs
+
+            // fat per day (g/day)
+            yrNeedOFfatMin = weight * 0.318;       // 0.7g per kg = 0.318g per lbs
+            yrNeedOFfatMax = weight * 0.590;       // 1.3g per kg = 0.590g per lbs
+
+            // fat from carb calories (g/day)
+            yrNeedOFfatMinfromcarb = (weight * 13.6 * 0.20) / 9;   // min
+            yrNeedOFfatMaxfromcarb = (weight * 13.6 * 0.35) / 9;   // max
+
+            // carbs (g/day)
+            yrNeedOFcarbMin = ((weight * 13.6) - 454) / 4;    // min
+            yrNeedOFcarbMax = ((weight * 13.6) - 113) / 4;    // max
+} else {
+    bmiOutput.textContent = "Please select matching units (kg/cm or lbs/in)";
+    return;
+}
             
             let unitychanger;
 
@@ -130,23 +143,24 @@
      
             yourNeedOfWater.textContent = 
                 `the water you need: ${yrNeedOFwhater.toFixed(3) + unitychanger}`;
-            protin_OUTPUT.textContent = 
-               ` your needs of protin:\n
-                the minimum:${yrNeedOFProteinMin.toFixed(3)} G/DAY\n
-                the minimum:${yrNeedOFProteinMax.toFixed(3)} G/DAY.`;
+            protin_OUTPUT.innerHTML = `
+                your needs of protein:<br>
+                the minimum: ${yrNeedOFProteinMin.toFixed(2)} G/DAY<br>
+                the maximum: ${yrNeedOFProteinMax.toFixed(2)} G/DAY`;
 
-            carb_OUTPUT.textContent = 
-               `your needs of carb:\n
-                the maximum:${yrNeedOFfatMin.toFixed(3)} G/DAY.\n
-                the minimum: ${yrNeedOFfatMax.toFixed(3)} G/DAY.`;
-                
-            fat_OUTPUT.textContent = 
-               `your needs of fat:\n
-               the minimum:${yrNeedOFcarbMin.toFixed(3)} G/DAY.\n
-               the maximum:${yrNeedOFcarbMax.toFixed(3)} G/DAY.\n
-               in ever carb you eat how mutch it gonna be fat:\n
-               the minimum:${yrNeedOFfatMaxfromcarb.toFixed(3)} G/DAY.\n
-               the maximum:${yrNeedOFfatMinfromcarb.toFixed(3)} G/DAY.`;
+            carb_OUTPUT.innerHTML = `
+                your needs of carbs:<br>
+                the minimum: ${yrNeedOFcarbMin.toFixed(2)} G/DAY<br>
+                the maximum: ${yrNeedOFcarbMax.toFixed(2)} G/DAY`;
+                // the minimum: ${yrNeedOFfatMin.toFixed(3)} G/DAY<br>
+                // the maximum: ${yrNeedOFfatMax.toFixed(3)} G/DAY
+            fat_OUTPUT.innerHTML = `
+                your needs of fat:<br>
+                the minimum: ${yrNeedOFfatMin.toFixed(2)} G/DAY<br>
+                the maximum: ${yrNeedOFfatMax.toFixed(2)} G/DAY<br>
+                fat from carbs:<br>
+                the minimum: ${yrNeedOFfatMinfromcarb.toFixed(2)} G/DAY<br>
+                the maximum: ${yrNeedOFfatMaxfromcarb.toFixed(2)} G/DAY`;       
 
         });
 
